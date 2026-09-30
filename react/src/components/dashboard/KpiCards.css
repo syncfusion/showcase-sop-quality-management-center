@@ -1,0 +1,123 @@
+
+.claw-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.e-card.claw-kpi-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow);
+  color: var(--primary);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 14px;
+  transition: all 0.2s ease;
+  min-height: 72px;
+}
+
+.e-card.claw-kpi-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.claw-kpi-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  color: white;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.claw-kpi-icon[data-status="draft"] {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+}
+
+.claw-kpi-icon[data-status="in-review"] {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.claw-kpi-icon[data-status="approved"] {
+  background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.claw-kpi-icon[data-status="obsolete"] {
+  background: linear-gradient(135deg, #6b7280, #4b5563);
+}
+
+.claw-kpi-icon svg {
+  width: 20px;
+  height: 20px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.claw-kpi-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-width: 0;
+}
+
+.claw-kpi-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--primary);
+  line-height: 1.1;
+}
+
+.claw-kpi-label {
+  font-size: 12px;
+  color: var(--secondary);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+@media (max-width: 1200px) {
+  .claw-kpi-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .claw-kpi-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* --- Skeleton shimmer for the count value (rendered while the first
+   `listContracts()` fetch is in flight, so the strip doesn't flash "0"
+   for all four tiles on first paint). */
+.claw-kpi-shimmer {
+  display: inline-block;
+  width: 32px;
+  height: 22px;
+  border-radius: 6px;
+  background: linear-gradient(
+    90deg,
+    var(--border) 0%,
+    rgba(0, 0, 0, 0.06) 50%,
+    var(--border) 100%
+  );
+  background-size: 200% 100%;
+  animation: claw-kpi-shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes claw-kpi-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}

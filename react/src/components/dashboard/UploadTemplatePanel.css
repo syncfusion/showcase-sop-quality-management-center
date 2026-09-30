@@ -1,0 +1,275 @@
+/* UploadTemplatePanel — combined upload + template picker styles.
+ * Used both inline on the Dashboard and inside the "Open a controlled
+ * document" Dialog in AppShell. The Dialog-specific overrides at the
+ * bottom of this file tighten margins so the panel doesn't double-frame
+ * inside a Syncfusion Dialog.
+ */
+
+.claw-utp {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+/* Shared eyebrow row used by both section headings. */
+.claw-utp-eyebrow-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.claw-utp-eyebrow-icon {
+  color: var(--accent);
+}
+
+/* ─── Upload section ───────────────────────────────────────────────────── */
+
+.claw-utp-upload {
+  position: relative;
+  /* Subtle accent-tinted top stripe — visually anchors the "primary" CTA. */
+  background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--accent) 4%, transparent) 0%,
+      transparent 60%
+    ),
+    var(--surface);
+}
+[data-theme="dark"] .claw-utp-upload {
+  background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--accent) 6%, transparent) 0%,
+      transparent 60%
+    ),
+    var(--surface);
+}
+
+.claw-utp-drop {
+  --claw-utp-drop-accent: var(--accent);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+  align-items: center;
+  padding: clamp(20px, 4vw, 32px);
+  margin-top: 14px;
+  border: 2px dashed var(--border);
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--surface) 80%, transparent);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.18s ease,
+    background-color 0.18s ease,
+    box-shadow 0.18s ease,
+    transform 0.18s ease;
+}
+.claw-utp-drop:hover {
+  border-color: color-mix(in srgb, var(--accent) 60%, var(--border));
+  background: color-mix(in srgb, var(--accent) 6%, var(--surface));
+  box-shadow:
+    0 0 0 4px color-mix(in srgb, var(--accent) 10%, transparent),
+    var(--shadow);
+}
+.claw-utp-drop:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow:
+    0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent),
+    var(--shadow);
+}
+.claw-utp-drop.is-dragging {
+  border-color: var(--accent);
+  border-style: solid;
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+  transform: scale(1.005);
+  box-shadow:
+    0 0 0 6px color-mix(in srgb, var(--accent) 14%, transparent),
+    var(--shadow);
+}
+.claw-utp-drop.is-busy {
+  pointer-events: none;
+  opacity: 0.75;
+}
+
+/* Desktop ≥ 720px: two-column (icon left, copy+button right). */
+@media (min-width: 720px) {
+  .claw-utp-drop {
+    grid-template-columns: auto 1fr;
+    gap: 24px;
+    padding: 28px 32px;
+  }
+}
+
+.claw-utp-drop-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  margin: 0 auto;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  color: var(--accent);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--accent) 20%, transparent);
+}
+.claw-utp-drop:hover .claw-utp-drop-icon,
+.claw-utp-drop.is-dragging .claw-utp-drop-icon {
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+.claw-utp-drop-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+.claw-utp-drop-headline {
+  font-size: var(--font-h3-size, 18px);
+  font-weight: 600;
+  color: var(--primary);
+  line-height: 1.3;
+}
+.claw-utp-drop-sub {
+  font-size: var(--font-small-size, 13px);
+  color: var(--secondary);
+  margin: 0;
+}
+.claw-utp-drop-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 4px;
+}
+.claw-utp-drop-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--secondary);
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--success) 12%, transparent);
+  color: color-mix(in srgb, var(--success) 80%, var(--primary));
+}
+.claw-utp-drop-meta {
+  font-size: 12px;
+  margin-top: 4px;
+  color: var(--secondary);
+}
+
+.claw-utp-error {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+/* ─── Templates section ───────────────────────────────────────────────── */
+
+.claw-utp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--space-md);
+}
+
+.claw-utp-template-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  overflow: hidden;
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    border-color 0.18s ease;
+  border: 1px solid var(--border);
+}
+.claw-utp-template-card:hover,
+.claw-utp-template-card:focus-visible {
+  transform: translateY(-2px);
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--accent) 35%, transparent),
+    var(--shadow);
+  outline: none;
+}
+.claw-utp-template-card .e-card-image {
+  position: relative;
+}
+.claw-utp-template-thumb {
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: var(--surface-muted);
+}
+.claw-utp-template-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+.claw-utp-template-card:hover .claw-utp-template-thumb img,
+.claw-utp-template-card:focus-visible .claw-utp-template-thumb img {
+  transform: scale(1.04);
+}
+
+.claw-utp-template-go {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  margin: 8px 14px 14px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  border-radius: 999px;
+  opacity: 0;
+  transform: translateX(-4px);
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease;
+}
+.claw-utp-template-card:hover .claw-utp-template-go,
+.claw-utp-template-card:focus-visible .claw-utp-template-go {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ─── Dialog-scoped overrides ──────────────────────────────────────────── */
+
+/*
+ * When this panel mounts inside a Syncfusion Dialog, the dialog chrome
+ * already frames the content — collapse the outer card chrome so the panel
+ * doesn't double-box itself. Targeted via the dialog's `.e-dialog` ancestor.
+ */
+.e-dialog .claw-utp .e-card.claw-utp-upload,
+.e-dialog .claw-utp .e-card.claw-utp-templates {
+  border: none;
+  box-shadow: none;
+  background: transparent;
+}
+.e-dialog .claw-utp .claw-panel-heading {
+  padding-bottom: 4px;
+}
+.e-dialog .claw-utp .e-card-content {
+  padding-top: 0;
+}
+.e-dialog .claw-utp {
+  gap: 18px;
+}
+
+/*
+ * Responsive safety net: on very narrow dialogs (mobile portrait), the
+ * drop-zone column collapses regardless of the desktop breakpoint so the
+ * "Browse files" CTA remains comfortably tappable.
+ */
+@media (max-width: 540px) {
+  .claw-utp-drop {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  .claw-utp-drop-copy {
+    align-items: center;
+  }
+}

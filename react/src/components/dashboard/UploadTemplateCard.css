@@ -1,0 +1,6 @@
+/* UploadTemplateCard — backwards-compat re-export of UploadTemplatePanel.
+ * Upload + templates visual styles live in `UploadTemplatePanel.css`.
+ * This file is intentionally empty: kept so existing
+ * `import "./UploadTemplateCard.css"` statements in legacy code paths
+ * don't 404, and as a hint that the canonical rules have moved.
+ */

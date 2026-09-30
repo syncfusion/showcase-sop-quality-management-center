@@ -1,0 +1,114 @@
+/* Audit timeline screen — chronologically-grouped activity feed for the
+   selected contract. Co-located with the screen file so the layout travels
+   with the page; deliberately mimics the chrome used by the Editor screen
+   (eyebrow + heading chip row + body list). */
+
+.claw-audit-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  margin: 0 0 14px;
+}
+
+.claw-audit-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.claw-audit-day {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 12px 16px 16px;
+}
+[data-theme="dark"] .claw-audit-day {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.claw-audit-day-label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--secondary, #6b7280);
+  margin: 0 0 10px;
+}
+
+.claw-audit-rows {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.claw-audit-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 0;
+  border-top: 1px solid var(--border);
+  position: relative;
+}
+.claw-audit-rows .claw-audit-row:first-child {
+  border-top: none;
+  padding-top: 6px;
+}
+
+.claw-audit-row .claw-audit-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: rgba(99, 102, 241, 0.1);
+  color: #4f46e5;
+  font-size: 14px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.claw-audit-row--version .claw-audit-icon {
+  background: rgba(16, 185, 129, 0.12);
+  color: #059669;
+}
+.claw-audit-row--feature .claw-audit-icon {
+  background: rgba(59, 130, 246, 0.12);
+  color: #2563eb;
+}
+.claw-audit-row--permission .claw-audit-icon {
+  background: rgba(217, 119, 6, 0.12);
+  color: #b45309;
+}
+
+.claw-audit-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.claw-audit-summary {
+  font-size: 14px;
+  color: var(--text-primary, #111827);
+  line-height: 1.45;
+}
+
+.claw-audit-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--secondary, #6b7280);
+}
+
+.claw-audit-meta time {
+  color: var(--secondary, #6b7280);
+}

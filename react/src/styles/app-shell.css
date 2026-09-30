@@ -1,0 +1,813 @@
+/* AppShell layout — Syncfusion Sidebar + top bar */
+
+.claw-app-shell {
+  position: relative;
+  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Keep the shell below Syncfusion's trial license bar (fixed, z-index 999999999). */
+body:has([style*="999999999"]) .claw-app-shell {
+  margin-top: 64px;
+  height: calc(100vh - 64px);
+  min-height: calc(100vh - 64px);
+}
+
+.claw-skip-link {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.claw-skip-link:focus {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 10000;
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 8px 12px;
+  clip: auto;
+  overflow: visible;
+  background: var(--primary);
+  color: var(--surface);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+/* Syncfusion Sidebar surface */
+.e-sidebar.claw-sidebar {
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  box-shadow: none;
+  color: var(--primary);
+}
+
+.claw-sidebar-inner {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 24px 16px;
+  box-sizing: border-box;
+  min-height: 0;
+}
+
+/* "Recent" document list — sits between the primary nav and the sidebar
+ * footer. The block grows (`flex: 1 1 0`) so the container stretches to
+ * the sidebar height; the inner `<ul>` owns the vertical scroll so a
+ * scrollbar appears only when items exceed the available height. */
+.claw-recent {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  margin: 16px 0 0;
+}
+
+.claw-recent-label {
+  padding: 0 12px 8px;
+}
+
+.claw-recent-list {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow-y: auto;
+  list-style: none;
+  margin: 0;
+  padding: 0 4px;
+  /* Make the scrollbar feel native but unobtrusive in WebKit. */
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.claw-recent-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.claw-recent-list::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 999px;
+}
+
+.claw-recent-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.claw-recent-empty {
+  padding: 8px 12px;
+  color: var(--secondary);
+  font-size: 12px;
+  font-style: italic;
+}
+
+/* Loading skeletons — rendered while the contracts fetch is in flight so
+ * the Recent list doesn't flash an empty state on first paint. Each
+ * skeleton row mirrors a real Recent row (dot + title bar) so the layout
+ * doesn't shift when the data arrives. */
+.claw-recent-list--loading {
+  /* Match the real list so scrollbar / padding behave the same. */
+  padding: 0 4px;
+}
+
+.claw-recent-item--skeleton {
+  cursor: default;
+  pointer-events: none;
+}
+
+.claw-recent-item--skeleton:hover {
+  background: transparent;
+}
+
+.claw-recent-dot-skeleton {
+  flex: 0 0 8px;
+  display: inline-block;
+}
+
+.claw-recent-title-skeleton {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: inline-block;
+}
+
+/* Docked (collapsed) sidebar — collapse the skeleton rows down to icon
+ * squares so they line up with the real Recent items. Mirrors the open
+ * sidebar's circle dot + title pattern; when collapsed only the circle
+ * stays visible so the skeleton still hints at a list without taking the
+ * full title-bar real estate. */
+.e-sidebar.claw-sidebar:not(.e-open) .claw-recent-list--loading {
+  padding: 0;
+  gap: 6px;
+}
+
+.e-sidebar.claw-sidebar:not(.e-open) .claw-recent-item--skeleton {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  justify-content: center;
+}
+
+.e-sidebar.claw-sidebar:not(.e-open) .claw-recent-title-skeleton {
+  display: none;
+}
+
+.e-sidebar.claw-sidebar:not(.e-open) .claw-recent-dot-skeleton {
+  flex: 0 0 10px;
+}
+
+.claw-recent-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--primary);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 120ms ease, color 120ms ease;
+}
+
+.claw-recent-item:hover {
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+}
+
+.claw-recent-item:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.claw-recent-title {
+  min-width: 0;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.claw-recent-dot {
+  flex: 0 0 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  background: var(--secondary);
+  /* Subtle ring keeps light dots readable on the surface in light mode. */
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--border) 60%, transparent);
+}
+
+.claw-recent-dot[data-status="Draft"] {
+  background: var(--info);
+}
+
+.claw-recent-dot[data-status="InReview"] {
+  background: var(--warning);
+}
+
+.claw-recent-dot[data-status="PendingSignature"] {
+  /* Purple — distinct from info/warning/success so all 5 states read apart. */
+  background: #a855f7;
+}
+
+.claw-recent-dot[data-status="Published"] {
+  background: var(--success);
+}
+
+.claw-recent-dot[data-status="Obsolete"] {
+  background: var(--secondary);
+}
+
+.claw-recent-item:active {
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+}
+
+/* Active row — fired when `contract.id` matches the contract id parsed from
+ * the URL via `contractIdFromPath` (i.e. the user is inside the
+ * `/workflow/:contractId/<child>` tree). Uses the same `--accent` tint as the
+ * nav-item active state for visual consistency, but anchors the highlight
+ * with a 2px left-border accent stripe — recent rows have no leading icon,
+ * so the stripe gives the row a distinct shape vs. the plain nav-item
+ * active background. The dot also picks up the accent so the status color
+ * doesn't fight the highlight. */
+.claw-recent-item--active {
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  color: var(--accent);
+  font-weight: 600;
+  /* Pad the same on both sides so the 2px stripe doesn't shift the text. */
+  padding-left: 8px;
+  border-left: 2px solid var(--accent);
+}
+
+.claw-recent-item--active:hover {
+  background: color-mix(in srgb, var(--accent) 20%, transparent);
+}
+
+/* Docked (collapsed) sidebar — Recent collapses to icon-sized squares,
+ * mirroring the .claw-nav-item collapse rules. The dot replaces the icon
+ * so the status stays glanceable. */
+.e-sidebar.claw-sidebar:not(.e-open) .claw-recent-label {
+  display: none;
+}
+
+.e-sidebar.claw-sidebar:not(.e-open) .claw-recent {
+  margin: 16px 0 0;
+  align-items: center;
+}
+
+.e-sidebar.claw-sidebar:not(.e-open) .claw-recent-list {
+  flex: 0 0 auto;
+  overflow: visible;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.e-sidebar.claw-sidebar:not(.e-open) .claw-recent-item {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  justify-content: center;
+  border-radius: var(--radius-md);
+}
+
+.e-sidebar.claw-sidebar:not(.e-open) .claw-recent-title {
+  display: none;
+}
+
+.e-sidebar.claw-sidebar:not(.e-open) .claw-recent-dot {
+  flex: 0 0 10px;
+  width: 10px;
+  height: 10px;
+}
+
+.e-sidebar.claw-sidebar:not(.e-open) .claw-recent-empty {
+  display: none;
+}
+
+/* Docked active row — when the sidebar is collapsed to icon squares the
+ * left-border stripe would crowd the dot, so swap it for an outer ring on
+ * the button itself. The dot's accent halo from the open-sidebar rule still
+ * stacks on top. */
+.e-sidebar.claw-sidebar:not(.e-open) .claw-recent-item--active {
+  border-left: 0;
+  background: color-mix(in srgb, var(--accent) 20%, transparent);
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+
+.e-sidebar.claw-sidebar:not(.e-open) .claw-sidebar-inner {
+  padding: 16px 8px;
+  align-items: center;
+}
+
+.claw-brand {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin: 0 10px 34px;
+}
+
+.e-sidebar.claw-sidebar:not(.e-open) .claw-brand {
+  margin: 0 0 24px;
+  justify-content: center;
+}
+
+.claw-brand-mark {
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  border-radius: var(--radius-md);
+  display: grid;
+  place-items: center;
+  background: var(--primary);
+  color: var(--surface);
+  font-weight: 700;
+}
+
+.claw-brand-title {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--primary);
+}
+
+.claw-brand-sub {
+  font-size: 12px;
+  color: var(--secondary);
+}
+
+.claw-eyebrow {
+  color: var(--secondary);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.claw-nav-label {
+  margin: 0 10px 8px;
+}
+
+.claw-workflow-nav {
+  min-width: 0;
+}
+
+.claw-overview-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0 0 16px;
+}
+
+.claw-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--primary);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 120ms ease, color 120ms ease;
+}
+
+.claw-nav-item:hover {
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+}
+
+.claw-nav-item:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.claw-nav-item-icon {
+  flex: 0 0 18px;
+  color: var(--secondary);
+}
+
+.claw-nav-item-label {
+  min-width: 0;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.claw-nav-item--active {
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.claw-nav-item--active .claw-nav-item-icon {
+  color: var(--accent);
+}
+
+.claw-nav-item:disabled,
+.claw-nav-item[aria-disabled="true"] {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.claw-nav-item:disabled:hover,
+.claw-nav-item[aria-disabled="true"]:hover {
+  background: transparent;
+}
+
+.e-sidebar.claw-sidebar:not(.e-open) .claw-overview-nav {
+  align-items: center;
+  gap: 6px;
+}
+
+.e-sidebar.claw-sidebar:not(.e-open) .claw-nav-item {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  justify-content: center;
+  border-radius: var(--radius-md);
+}
+
+.e-sidebar.claw-sidebar:not(.e-open) .claw-nav-item-label {
+  display: none;
+}
+
+/* Horizontal workflow stepper — mounted by WorkflowLayout at the top of
+ * the workflow tree. Sits in a hairline-separated band so the inner pane
+ * swap (Editor ⇆ Review ⇆ Sign ⇆ Audit) reads visually. */
+.claw-workflow-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-width: 0;
+}
+
+.claw-stepper-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  /* max-width: 920px; */
+  /* margin: 0 auto var(--space-lg); */
+  padding: var(--space-md) var(--space-lg);
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--surface) 92%, transparent) 0%,
+    color-mix(in srgb, var(--surface) 88%, var(--accent) 4%) 100%
+  );
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow:
+    0 1px 2px rgba(15, 23, 42, 0.04),
+    0 10px 30px -12px rgba(67, 89, 122, 0.18);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+  transition:
+    box-shadow 240ms ease,
+    transform 240ms ease;
+}
+
+.claw-stepper-bar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    1200px circle at 0% 0%,
+    color-mix(in srgb, var(--accent) 10%, transparent) 0%,
+    transparent 50%
+  );
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.claw-stepper-bar:hover {
+  box-shadow:
+    0 1px 2px rgba(15, 23, 42, 0.06),
+    0 18px 40px -14px rgba(67, 89, 122, 0.28);
+  transform: translateY(-1px);
+}
+
+.claw-stepper-bar .e-stepper.claw-workflow-stepper {
+  display: block;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.claw-stepper-bar .claw-workflow-stepper .e-step {
+  transition: transform 200ms ease;
+}
+
+.claw-stepper-bar .claw-workflow-stepper .e-step:hover {
+  transform: translateY(-2px);
+}
+
+.claw-stepper-bar .claw-workflow-stepper .e-label,
+.claw-stepper-bar .claw-workflow-stepper .e-step-label {
+  color: var(--secondary);
+  font-size: 13px;
+  font-weight: 500;
+  transition: color 200ms ease;
+}
+
+.claw-stepper-bar .claw-workflow-stepper .e-step-inprogress .e-label,
+.claw-stepper-bar .claw-workflow-stepper .e-step-selected .e-label,
+.claw-stepper-bar .claw-workflow-stepper .e-step-inprogress .e-step-label,
+.claw-stepper-bar .claw-workflow-stepper .e-step-selected .e-step-label {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.claw-stepper-bar .claw-workflow-stepper .e-step-completed .e-label,
+.claw-stepper-bar .claw-workflow-stepper .e-step-completed .e-step-label {
+  color: var(--primary);
+}
+
+.claw-stepper-bar .claw-workflow-stepper .e-step-disabled {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+/* Step circle — rest, hover, completed and active states. */
+.claw-stepper-bar .claw-workflow-stepper .e-step-container .e-step {
+  transition:
+    background 220ms ease,
+    box-shadow 220ms ease,
+    transform 220ms ease;
+}
+
+.claw-stepper-bar .claw-workflow-stepper .e-step-container .e-step:hover {
+  box-shadow: 0 6px 18px -6px rgba(67, 89, 122, 0.35);
+}
+
+.claw-stepper-bar .claw-workflow-stepper .e-step-completed .e-step {
+  background: linear-gradient(
+    135deg,
+    var(--primary) 0%,
+    color-mix(in srgb, var(--primary) 75%, var(--accent) 25%) 100%
+  );
+  box-shadow: 0 4px 14px -4px color-mix(in srgb, var(--primary) 50%, transparent);
+}
+
+.claw-stepper-bar .claw-workflow-stepper .e-step-selected .e-step,
+.claw-stepper-bar .claw-workflow-stepper .e-step-inprogress .e-step {
+  background: linear-gradient(
+    135deg,
+    var(--accent) 0%,
+    color-mix(in srgb, var(--accent) 65%, var(--primary) 35%) 100%
+  );
+  color: #fff;
+  box-shadow:
+    0 0 0 6px color-mix(in srgb, var(--accent) 18%, transparent),
+    0 10px 24px -8px color-mix(in srgb, var(--accent) 55%, transparent);
+  animation: claw-step-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes claw-step-pulse {
+  0%, 100% {
+    box-shadow:
+      0 0 0 6px color-mix(in srgb, var(--accent) 18%, transparent),
+      0 10px 24px -8px color-mix(in srgb, var(--accent) 55%, transparent);
+  }
+  50% {
+    box-shadow:
+      0 0 0 10px color-mix(in srgb, var(--accent) 8%, transparent),
+      0 14px 30px -8px color-mix(in srgb, var(--accent) 65%, transparent);
+  }
+}
+
+/* Connector / progress-bar between steps — gradient + subtle shimmer. */
+.claw-stepper-bar .claw-workflow-stepper .e-progress-bar {
+  background: linear-gradient(
+    90deg,
+    var(--primary) 0%,
+    var(--accent) 50%,
+    var(--primary) 100%
+  );
+  background-size: 200% 100%;
+  animation: claw-connector-shimmer 4s linear infinite;
+}
+
+@keyframes claw-connector-shimmer {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+.claw-stepper-bar .claw-workflow-stepper .e-progress-bar.e-progress-complete {
+  background: linear-gradient(
+    90deg,
+    var(--primary) 0%,
+    color-mix(in srgb, var(--primary) 70%, var(--accent) 30%) 100%
+  );
+}
+
+/* Tooltip surface inside the workflow stepper. */
+.claw-stepper-bar .e-tooltip-wrap .e-tip-content,
+.claw-stepper-bar .e-tooltip-wrap.e-popup .e-tip-content {
+  background: var(--surface);
+  color: var(--secondary);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 12px 28px -10px rgba(15, 23, 42, 0.25);
+  font-size: 12px;
+  padding: 6px 10px;
+}
+
+[data-theme="dark"] .claw-stepper-bar {
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.4),
+    0 14px 32px -14px rgba(0, 0, 0, 0.6);
+}
+
+[data-theme="dark"] .claw-stepper-bar:hover {
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.5),
+    0 20px 44px -14px rgba(0, 0, 0, 0.75);
+}
+
+@media (max-width: 1023px) {
+  .claw-stepper-bar {
+    max-width: 100%;
+    margin: 0 var(--space-sm) var(--space-md);
+    padding: var(--space-sm) var(--space-md);
+    border-radius: 12px;
+  }
+}
+
+/* The inner pane that holds the active Editor / Review / Sign / Audit. */
+.claw-workflow-layout-pane {
+  min-width: 0;
+}
+
+.claw-sidebar-footer {
+  margin-top: auto;
+  padding: 14px 10px 0;
+  border-top: 1px solid var(--border);
+  color: var(--secondary);
+  font-size: 12px;
+}
+
+.e-sidebar.claw-sidebar:not(.e-open) .claw-brand-text,
+.e-sidebar.claw-sidebar:not(.e-open) .claw-eyebrow,
+.e-sidebar.claw-sidebar:not(.e-open) .claw-sidebar-footer {
+  display: none;
+}
+
+.e-sidebar-overlay {
+  background: rgba(23, 43, 77, 0.4);
+}
+
+[data-theme="dark"] .e-sidebar-overlay {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.claw-main {
+  min-width: 0;
+  height: 100%;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.e-appbar.e-inherit.claw-topbar {
+  min-height: 72px;
+  padding: 16px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border: none;
+  background: var(--surface);
+  color: var(--primary);
+  box-shadow: none;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.claw-topbar-start {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.claw-breadcrumb.e-breadcrumb,
+.claw-breadcrumb.e-breadcrumb .e-breadcrumb-item,
+.claw-breadcrumb.e-breadcrumb .e-breadcrumb-text {
+  color: var(--secondary);
+  font-size: var(--font-small-size);
+}
+
+.claw-breadcrumb.e-breadcrumb .e-breadcrumb-item:last-child .e-breadcrumb-text {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.claw-top-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.claw-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #dbeafe;
+  color: #1d4ed8;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.claw-icon-button {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--primary);
+  padding: 8px 12px;
+  min-width: 44px;
+  min-height: 44px;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  display: inline-grid;
+  place-items: center;
+}
+
+.claw-icon-button svg {
+  display: block;
+}
+
+.claw-icon-button:hover {
+  border-color: var(--accent);
+}
+
+.claw-icon-button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.claw-theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.claw-theme-toggle-icon {
+  display: inline-grid;
+  place-items: center;
+  color: var(--primary);
+}
+
+.claw-theme-toggle-icon svg {
+  display: block;
+}
+
+.claw-content {
+  width: 100%;
+  padding: 32px;
+  flex: 1;
+}
+.claw-content-inner {
+  min-width: 0;
+}
+
+@media (max-width: 1024px) {
+  .e-appbar.e-inherit.claw-topbar {
+    padding: 12px 16px;
+  }
+
+  .claw-content {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 640px) {
+  .claw-breadcrumb {
+    font-size: 12px;
+  }
+}
